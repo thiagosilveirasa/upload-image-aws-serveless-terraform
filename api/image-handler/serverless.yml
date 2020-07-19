@@ -1,0 +1,32 @@
+org: thiagosilveirasa89
+app: image-handler-app
+
+service: image-handler
+plugins:
+ - serverless-apigw-binary
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  
+  stage: dev
+  region: us-east-1
+
+custom:
+  apigwBinary:
+    types:
+      - 'image/jpeg'
+      - 'image/png'
+  stage: ${opt:stage, self:provider.stage}
+
+functions:
+  upload:
+    handler: handler.upload
+    role: ${ssm:${self:custom.stage}-lambda-image-upload-iam-role}
+    events:
+     - http:
+         path: images
+         method: post
+    environment:
+      BUCKET: ${ssm:${self:custom.stage}-name-bucket-images}
+      DYNAMODB_IMAGES: ${ssm:${self:custom.stage}-dynamodb-images-table}
