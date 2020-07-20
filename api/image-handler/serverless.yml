@@ -30,3 +30,13 @@ functions:
     environment:
       BUCKET: ${ssm:${self:custom.stage}-name-bucket-images}
       DYNAMODB_IMAGES: ${ssm:${self:custom.stage}-dynamodb-images-table}
+  
+  tags:
+    handler: handler.tags
+    role: ${ssm:${self:custom.stage}-lambda-image-upload-iam-role}
+    events:
+     - http:
+         path: images/{id}/tags
+         method: get
+    environment:
+      DYNAMODB_IMAGES: ${ssm:${self:custom.stage}-dynamodb-images-table}

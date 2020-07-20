@@ -20,3 +20,11 @@ module.exports.upload = async (event) => {
     }
 };
 
+module.exports.tags = async (event) => {
+  const data = await dynamodbService.get(event.pathParameters.id);
+  return {
+    statusCode: 200,
+    body: JSON.stringify(data.labels)
+  }
+};
+

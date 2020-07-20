@@ -25,6 +25,23 @@ const put = item => {
     });
 }
 
+const get = id => {
+    return new Promise((res, rej) => {
+        documentClient.get({
+          TableName: TABLE,
+          Key: {
+            id: id
+          },
+          ConsistentRead: true
+        }, (err, data) => {
+            if (err) {
+                return rej(err)
+            }
+          return res(data.Item);
+        })
+      })
+};
+
 module.exports = {
-    put
+    put, get
 }
