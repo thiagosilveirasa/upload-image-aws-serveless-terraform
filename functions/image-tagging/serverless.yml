@@ -1,0 +1,21 @@
+
+service: image-tagging 
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+  stage: dev
+  region: us-east-1
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+
+functions:
+  tag:
+    handler: handler.tag
+    role: ${ssm:${self:custom.stage}-lambda-image-tagging-iam-role}
+    events:
+     - sqs: ${ssm:${self:custom.stage}-tag-image-sqs}
+    environment:
+      DYNAMODB_IMAGES: ${ssm:${self:custom.stage}-dynamodb-images-table}
